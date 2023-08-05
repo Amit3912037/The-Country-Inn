@@ -59,7 +59,6 @@ export async function getBookingsForCabins() {
     console.error(error);
     throw new Error('Bookings could not be loaded');
   }
-  console.log(data);
 
   return data;
 }
@@ -120,8 +119,6 @@ export async function getStaysTodayActivity() {
 
 export async function createUpdateBooking(obj, id) {
   let query = supabase.from('bookings');
-  console.log();
-
   //Update
   if (id) {
     query = query.update(obj).eq('id', id);

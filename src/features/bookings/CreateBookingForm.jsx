@@ -14,6 +14,7 @@ import Textarea from '../../ui/Textarea';
 import { useCreateGuest } from './useCreateGuest';
 import { useCabins } from '../cabins/useCabins';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '../../utils/helpers';
 
 function CreateBookingForm() {
   const { register, formState, setValue, handleSubmit, clearErrors } = useForm({
@@ -32,7 +33,6 @@ function CreateBookingForm() {
 
   function handleChange(range) {
     const [selectedStartDate, selectedEndDate] = range;
-    console.log(selectedEndDate);
     setStartDate(selectedStartDate);
     setEndDate(selectedEndDate);
     if (selectedStartDate && selectedEndDate) {
@@ -89,18 +89,20 @@ function CreateBookingForm() {
       fullName: guestName,
       nationalID: nationalId,
     };
+
     createGuest(newGuest, {
       onSuccess: (data) => {
+        const numNights = intervalToDuration({
+          start: startDate,
+          end: endDate,
+        }).days;
         const newBooking = {
-          startDate,
-          endDate,
-          numNights: intervalToDuration({
-            start: startDate,
-            end: endDate,
-          }).days,
+          startDate: formatDate(startDate),
+          endDate: formatDate(endDate),
+          numNights,
           numGuests: Number(numGuests),
           cabinPrice: Number(cabinPrice),
-          totalPrice: Number(cabinPrice),
+          totalPrice: numNights * Number(cabinPrice),
           status: 'unconfirmed',
           isPaid: false,
           hasBreakfast: false,
